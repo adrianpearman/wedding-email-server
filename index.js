@@ -115,6 +115,7 @@ app.get("/api/group", fetchGroup);
 app.put("/api/update", updateGroup);
 // Sending the confirmation email
 app.post("/api/email", sendMail);
+// Server listening on the specific PORT
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
 });
