@@ -30,13 +30,7 @@ const fetchGroup = async (req, res) => {
       .select()
       .eq("group", req.query.id);
 
-    if (error) {
-      throw new Error(
-        `Unable to find an Invitation of #${req.query.id}. Please enter a valid Invitation ID. If your ID is not working, please contact us`
-      );
-    }
-
-    if (data.length === 0) {
+    if (error || data.length === 0) {
       throw new Error(
         `Unable to find an Invitation of #${req.query.id}. Please enter a valid Invitation ID. If your ID is not working, please contact us`
       );
