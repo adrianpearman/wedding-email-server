@@ -4,11 +4,9 @@ const express = require("express");
 const cors = require("cors");
 const mg = require("mailgun-js");
 const { createClient } = require("@supabase/supabase-js");
-
 // SERVER VARIABLES
 const app = express();
 const PORT = process.env.PORT || 9000;
-const rootEmail = "adrianpearman12@gmail.com";
 // DB Initialization
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -34,13 +32,13 @@ const fetchGroup = async (req, res) => {
 
     if (error) {
       throw new Error(
-        `Unable to find an Invitation of #${groupID}. Please enter a valid Invitation ID. If your ID is not working, please contact us`
+        `Unable to find an Invitation of #${req.query.id}. Please enter a valid Invitation ID. If your ID is not working, please contact us`
       );
     }
 
     if (data.length === 0) {
       throw new Error(
-        `Unable to find an Invitation of #${groupID}. Please enter a valid Invitation ID. If your ID is not working, please contact us`
+        `Unable to find an Invitation of #${req.query.id}. Please enter a valid Invitation ID. If your ID is not working, please contact us`
       );
     }
 
@@ -102,12 +100,10 @@ const sendMail = async (req, res) => {
       }
     });
 };
-
 // MIDDLEWARES
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 // ROUTES
 // Get the groups
 app.get("/api/group", fetchGroup);
