@@ -1,7 +1,9 @@
 // NODE MODULES
 require("dotenv").config();
-const express = require("express");
 const cors = require("cors");
+const express = require("express");
+const fs = require("fs");
+const mailcomposer = require("mailcomposer");
 const mg = require("mailgun-js");
 const { createClient } = require("@supabase/supabase-js");
 // SERVER VARIABLES
@@ -22,6 +24,12 @@ const mailgun = () => {
   return mg(credentials);
 };
 // FUNCTIONS
+// Fetch and stringify email template
+const importHTMLForEmail = () => {
+  const emailPath = require("path").join(__dirname, "./emails");
+  const emailText = fs.readFileSync(`${emailPath}/index.html`, "utf8");
+  return emailText;
+};
 // Get wedding groups
 const fetchGroup = async (req, res) => {
   try {
@@ -68,31 +76,37 @@ const updateGroup = async (req, res) => {
 // Send confirmation email
 const sendMail = async (req, res) => {
   const { data } = req.body;
+  const emailData = await importHTMLForEmail();
 
-  const emailInfo = {
-    from: "Excited User <mailgun@sandbox-123.mailgun.org>",
+  const mail = mailcomposer({
+    from: "The Pearmans <thepearmanwedding@gmail.com>",
     to: data,
     subject: "Thanks for your RSVP!",
-    html: "<h1>Testing some Mailgun awesomeness!</h1>",
-  };
+    html: emailData,
+  });
 
-  // TODO: Figure out email body content and how to attach content to it
-  // add to calendar
-  // Visit Amy & William's Wedding Website any time to update your RSVP and check details about the big day!
-  // link back to the home page
+  mail.build((err, message) => {
+    const dataToSend = {
+      to: data,
+      message: message.toString("ascii"),
+    };
 
-  mailgun()
-    .messages()
-    .send(emailInfo, (error, body) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send({
-          msg: "Something went wrong when sending the email",
-        });
-      } else {
-        res.send({ msg: "Email sent successfully! " });
-      }
-    });
+    mailgun()
+      .messages()
+      .sendMime(dataToSend, (error, body) => {
+        if (error) {
+          res.status(500).send({
+            msg: "Something went wrong when sending the email, please try again or contact us",
+            success: false,
+          });
+        } else {
+          res.send({
+            msg: "Email sent successfully! ",
+            success: true,
+          });
+        }
+      });
+  });
 };
 // MIDDLEWARES
 app.use(cors());
