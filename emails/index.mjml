@@ -1,0 +1,136 @@
+<mjml>
+  <mj-head>
+    <mj-font name="Spectral" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@1,300&display=swap" />
+    <mj-font name="Sen" href="https://fonts.googleapis.com/css2?family=Sen&display=swap" />
+    <mj-attributes>
+       <mj-text 
+        align="center"
+        color="#000" 
+        font-family="Sen, sans-serif" 
+        font-size="20px" 
+        line-height="26px" 
+        padding="20px" 
+      />
+      <mj-image padding="0px" />
+      <mj-button 
+        background-color="#1b4508"
+        border-radius="0px" 
+        color="#fff" 
+        font-family="Sen, sans-serif" 
+        font-size="16px" 
+        height="45px" 
+        text-transform="uppercase" 
+        width="250px"
+      />
+      <mj-section padding="0px" />
+      <mj-class 
+        name="head-text" 
+        font-size="48px" 
+        line-height="70px" 
+        text-transform="uppercase" 
+      />
+    </mj-attributes>
+  </mj-head>
+
+  <mj-body background-color="#f1f1f1">
+    <!-- `header -->
+    <mj-section>
+      <mj-column>
+        <mj-image 
+        src="https://thepearmanwedding.com/styles/assets/images/email/jordanadrian-120.jpg" 
+        alt="" 
+        />
+      </mj-column>
+    </mj-section>
+    <!-- response section -->
+    <mj-section>
+     <mj-column padding="20px">
+       <mj-text 
+       font-family="Spectral, serif" 
+       font-size="50px" 
+       letter-spacing="2px" 
+       line-height="50px" 
+       padding="20px 0"
+       text-transform="uppercase" 
+       > 
+        Thank you for your RSVP
+      </mj-text>
+      <mj-text>
+        For those able to attend, we look forward to seeing you on November 18th 2023!
+      </mj-text>
+      <mj-text>
+        For those unable to attend, we look forward to celebrating with you in the future!
+      </mj-text>
+     </mj-column>
+    </mj-section>
+    <!-- details section -->
+    <mj-section padding="20px 0">
+    <!-- image column -->
+      <mj-column width="100%" padding="0 10px">
+        <mj-text
+          font-family="Spectral, serif" 
+          font-size="30px" 
+          letter-spacing="2px" 
+          line-height="30px" 
+          padding="0"
+          text-transform="uppercase" 
+        >
+          Location
+        </mj-text>
+        <mj-divider 
+          border-color="#1b4508" 
+          padding-bottom="20px"
+          width="50%"
+        >
+        </mj-divider>
+        <mj-image 
+          src="https://thepearmanwedding.com/styles/assets/images/email/venue-location.png" 
+          href="https://www.google.com/maps/place/Sassafraz/@43.6703722,-79.3911083,15z/data=!4m6!3m5!1s0x882b34af8b877cb5:0xac6193d3c1523b6a!8m2!3d43.6703722!4d-79.3911083!16s%2Fg%2F1tgz634m?entry=ttu" 
+        />
+        <mj-text>
+          100 Cumberland St, Toronto, ON M5R 1A6
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <!--  -->
+    <mj-section>
+      <mj-column>
+        <mj-text padding-top="0px">
+          Visit our wedding website any time to update your RSVP and check out the details regarding the big day!
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section
+      padding-bottom="30px"
+      padding-top="0px"
+    >
+      <mj-column width="50%">
+         <mj-button 
+          href="https://thepearmanwedding.com"
+        >
+          Our Website
+        </mj-button>
+      </mj-column>
+      <mj-column width="50%">
+         <mj-button 
+          href="https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=NmJqbjBjZW12MjcwdnFlMmxhYm1kODZ1YjcgdGhlcGVhcm1hbndlZGRpbmdAbQ&tmsrc=thepearmanwedding%40gmail.com"
+        >
+          Add To Calendar
+        </mj-button>
+      </mj-column>
+    </mj-section>
+    <!-- footer -->
+    <mj-section background-color="#1b4508">
+      <mj-column>
+        <mj-text 
+          color="#fffbf2" 
+          font-family="Spectral, serif" 
+          padding="20px 0" 
+          text-transform="uppercase"
+        >
+          The Pearman's 
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
