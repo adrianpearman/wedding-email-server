@@ -111,6 +111,10 @@ const sendMail = async (req, res) => {
 // Guest Analytics
 const guestAnalytics = async (req, res) => {
   try {
+    if (req.query.pwd !== process.env.ANALYTIC_SECRET) {
+      throw new Error("Unauthorized to view details");
+    }
+
     const { data, error } = await supabase.from("guests").select();
 
     if (error) {
@@ -145,10 +149,9 @@ const guestAnalytics = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send({
       data: {},
-      msg: error,
+      msg: error.message,
       success: false,
     });
   }
