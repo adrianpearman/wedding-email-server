@@ -108,6 +108,51 @@ const sendMail = async (req, res) => {
       });
   });
 };
+// Guest Analytics
+const guestAnalytics = async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("guests").select();
+
+    if (error) {
+      throw new Error(
+        "Can't get guest analytics at this time. Try again later.."
+      );
+    }
+    // Guests coming
+    const confirmedGuests = data.filter(
+      ({ response_going }) => response_going === true
+    );
+    // Guests not coming
+    const notComingGuests = data.filter(
+      ({ response_going }) => response_going === false
+    );
+    // Guests not confirmed
+    const unconformedGuests = data.filter(
+      ({ response_going }) => response_going === null
+    );
+    // Analytics object
+    const analytics = {
+      confirmedGuests,
+      notComingGuests,
+      unconformedGuests,
+      totalGuests: data.length,
+      guestsResponded: confirmedGuests.length + notComingGuests.length,
+    };
+    // Sending data through response object
+    res.send({
+      data: analytics,
+      msg: "",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      data: {},
+      msg: error,
+      success: false,
+    });
+  }
+};
 // MIDDLEWARES
 app.use(cors());
 app.use(express.json());
@@ -115,6 +160,8 @@ app.use(express.urlencoded({ extended: true }));
 // ROUTES
 // Get the groups
 app.get("/api/group", fetchGroup);
+// Guest Analytics
+app.get("/api/analytics", guestAnalytics);
 // Updating the guest
 app.put("/api/update", updateGroup);
 // Sending the confirmation email
