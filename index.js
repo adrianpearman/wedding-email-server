@@ -123,13 +123,13 @@ const guestAnalytics = async (req, res) => {
       );
     }
     // Guests coming
-    const confirmedGuests = data.filter(
-      ({ response_going }) => response_going === true
-    );
+    const confirmedGuests = data
+      .filter(({ response_going }) => response_going === true)
+      .reverse();
     // Guests not coming
-    const notComingGuests = data.filter(
-      ({ response_going }) => response_going === false
-    );
+    const notComingGuests = data
+      .filter(({ response_going }) => response_going === false)
+      .reverse();
     // Guests not confirmed
     const unconformedGuests = data.filter(
       ({ response_going }) => response_going === null
