@@ -122,16 +122,28 @@ const guestAnalytics = async (req, res) => {
         "Can't get guest analytics at this time. Try again later.."
       );
     }
+
+    const newData = data.map((d) => {
+      const responseDate = new Date(d.response_date);
+      const updatedObj = {
+        ...d,
+        unixTime: Math.floor(responseDate.getTime() / 1000),
+      };
+      return updatedObj;
+    });
+
     // Guests coming
-    const confirmedGuests = data
+    const confirmedGuests = newData
       .filter(({ response_going }) => response_going === true)
+      .sort((x, y) => x.unixTime - y.unixTime)
       .reverse();
     // Guests not coming
-    const notComingGuests = data
+    const notComingGuests = newData
       .filter(({ response_going }) => response_going === false)
+      .sort((x, y) => x.unixTime - y.unixTime)
       .reverse();
     // Guests not confirmed
-    const unconformedGuests = data.filter(
+    const unconformedGuests = newData.filter(
       ({ response_going }) => response_going === null
     );
     // Analytics object
