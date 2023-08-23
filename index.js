@@ -139,8 +139,10 @@ const guestAnalytics = async (req, res) => {
       confirmedGuests,
       notComingGuests,
       unconformedGuests,
-      totalGuests: data.length,
       guestsResponded: confirmedGuests.length + notComingGuests.length,
+      totalGuestsComing: confirmedGuests.length,
+      totalGuestsNotComing: notComingGuests.length,
+      totalGuests: data.length,
     };
     // Sending data through response object
     res.send({
