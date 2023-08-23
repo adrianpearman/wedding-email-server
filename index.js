@@ -30,6 +30,11 @@ const importHTMLForEmail = () => {
   const emailText = fs.readFileSync(`${emailPath}/index.html`, "utf8");
   return emailText;
 };
+// Convert response date to unix
+const convertToUnix = (date) => {
+  const responseDate = new Date(date);
+  return Math.floor(responseDate.getTime() / 1000);
+};
 // Get wedding groups
 const fetchGroup = async (req, res) => {
   try {
@@ -111,50 +116,47 @@ const sendMail = async (req, res) => {
 // Guest Analytics
 const guestAnalytics = async (req, res) => {
   try {
+    // Throw error if no credentials
     if (req.query.pwd !== process.env.ANALYTIC_SECRET) {
       throw new Error("Unauthorized to view details");
     }
-
+    // Destructuring data from supabase
     const { data, error } = await supabase.from("guests").select();
-
+    // Throw error if supabase is not available
     if (error) {
       throw new Error(
         "Can't get guest analytics at this time. Try again later.."
       );
     }
-
-    const newData = data.map((d) => {
-      const responseDate = new Date(d.response_date);
-      const updatedObj = {
-        ...d,
-        unixTime: Math.floor(responseDate.getTime() / 1000),
-      };
-      return updatedObj;
-    });
-
     // Guests coming
-    const confirmedGuests = newData
+    const confirmedGuests = data
       .filter(({ response_going }) => response_going === true)
-      .sort((x, y) => x.unixTime - y.unixTime)
+      .sort(
+        (x, y) =>
+          convertToUnix(x.response_date) - convertToUnix(y.response_date)
+      )
       .reverse();
     // Guests not coming
-    const notComingGuests = newData
+    const notComingGuests = data
       .filter(({ response_going }) => response_going === false)
-      .sort((x, y) => x.unixTime - y.unixTime)
+      .sort(
+        (x, y) =>
+          convertToUnix(x.response_date) - convertToUnix(y.response_date)
+      )
       .reverse();
     // Guests not confirmed
-    const unconformedGuests = newData.filter(
+    const unconformedGuests = data.filter(
       ({ response_going }) => response_going === null
     );
     // Analytics object
     const analytics = {
-      confirmedGuests,
-      notComingGuests,
-      unconformedGuests,
       guestsResponded: confirmedGuests.length + notComingGuests.length,
       totalGuestsComing: confirmedGuests.length,
       totalGuestsNotComing: notComingGuests.length,
       totalGuests: data.length,
+      confirmedGuests,
+      notComingGuests,
+      unconformedGuests,
     };
     // Sending data through response object
     res.send({
