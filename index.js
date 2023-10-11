@@ -4,36 +4,19 @@ const cors = require("cors");
 const express = require("express");
 const fs = require("fs");
 const mailcomposer = require("mailcomposer");
-const mg = require("mailgun-js");
-const { createClient } = require("@supabase/supabase-js");
+const path = require("path");
+// UTIL FUCNTIONS
+const { convertToUnix, mailgun, supabase } = require("./util");
 // SERVER VARIABLES
 const app = express();
 const PORT = process.env.PORT || 9000;
-// DB Initialization
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
-// MAILGUN CREDENTIALS
-const credentials = {
-  domain: process.env.MAILGUN_DOMAIN,
-  apiKey: process.env.MAILGUN_APIKEY,
-};
-// Mailgun Initialization
-const mailgun = () => {
-  return mg(credentials);
-};
+
 // FUNCTIONS
 // Fetch and stringify email template
 const importHTMLForEmail = () => {
   const emailPath = require("path").join(__dirname, "./emails");
   const emailText = fs.readFileSync(`${emailPath}/index.html`, "utf8");
   return emailText;
-};
-// Convert response date to unix
-const convertToUnix = (date) => {
-  const responseDate = new Date(date);
-  return Math.floor(responseDate.getTime() / 1000);
 };
 // Get wedding groups
 const fetchGroup = async (req, res) => {
@@ -115,6 +98,21 @@ const sendMail = async (req, res) => {
 };
 // Guest Analytics
 const guestAnalytics = async (req, res) => {
+  const errorHTML = path.join(__dirname, "public", "error.html");
+  const indexHTML = path.join(__dirname, "public", "index.html");
+
+  try {
+    // Throw error if no credentials
+    if (req.query.pwd !== process.env.ANALYTIC_SECRET) {
+      throw new Error("Unauthorized to view details");
+    }
+
+    res.sendFile(indexHTML);
+  } catch (error) {
+    res.sendFile(errorHTML);
+  }
+};
+const guestAnalyticsData = async (req, res) => {
   try {
     // Throw error if no credentials
     if (req.query.pwd !== process.env.ANALYTIC_SECRET) {
@@ -172,15 +170,18 @@ const guestAnalytics = async (req, res) => {
     });
   }
 };
+
 // MIDDLEWARES
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
 // ROUTES
 // Get the groups
 app.get("/api/group", fetchGroup);
 // Guest Analytics
-app.get("/api/analytics", guestAnalytics);
+app.get("/analytics", guestAnalytics);
+app.get("/api/analytics/", guestAnalyticsData);
 // Updating the guest
 app.put("/api/update", updateGroup);
 // Sending the confirmation email
